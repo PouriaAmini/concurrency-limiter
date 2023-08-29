@@ -24,15 +24,31 @@ type config struct {
 var cfg config
 
 var (
-	successThroughput = prometheus.NewCounter(prometheus.CounterOpts{
+	successThroughput = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: fmt.Sprintf("http_success_response_client%d_throughput", cfg.id),
 		Help: fmt.Sprintf("Client%d Success Throughput", cfg.id),
 	})
-	timeoutThroughput = prometheus.NewCounter(prometheus.CounterOpts{
+	timeoutThroughput = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: fmt.Sprintf("http_timeout_response_client%d_throughput", cfg.id),
 		Help: fmt.Sprintf("Client%d Timeout Throughput", cfg.id),
 	})
 )
+
+func addThroughputCounter(isSuccess bool) {
+	if isSuccess {
+		successThroughput.Inc()
+		return
+	}
+	timeoutThroughput.Inc()
+}
+
+func removeThroughputCounter(isSuccess bool) {
+	if isSuccess {
+		successThroughput.Dec()
+		return
+	}
+	timeoutThroughput.Dec()
+}
 
 func init() {
 	prometheus.MustRegister(successThroughput, timeoutThroughput)
@@ -44,13 +60,17 @@ func main() {
 	flag.IntVar(&cfg.targetPort, "targetPort", 8080, "port to send requests to")
 	flag.IntVar(&cfg.rate, "rate", 2, "number of requests to send per second")
 	flag.Parse()
+
+	successRespCh := make(chan bool, 1)
+
 	client := &http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: 3 * time.Second,
 		Transport: &http.Transport{
 			MaxIdleConns:        cfg.rate,
 			MaxIdleConnsPerHost: cfg.rate,
 		},
 	}
+
 	http.Handle("/metrics", promhttp.Handler())
 	go func() {
 		err := http.ListenAndServe(fmt.Sprintf(":%d", cfg.port), nil)
@@ -58,13 +78,14 @@ func main() {
 			fmt.Println(err)
 		}
 	}()
+
 	var get = func() {
 		start := time.Now()
 		resp, err := client.Get(fmt.Sprintf("http://localhost:%d", cfg.targetPort))
 		if err != nil {
 			var errTimeout *url.Error
 			if errors.As(err, &errTimeout) && errTimeout.Timeout() {
-				timeoutThroughput.Inc()
+				successRespCh <- false
 			}
 			fmt.Println(err)
 			return
@@ -73,12 +94,34 @@ func main() {
 			err := resp.Body.Close()
 			if err != nil {
 				fmt.Println(err)
+				return
 			}
-			successThroughput.Inc()
+			successRespCh <- true
 		}()
-		_, _ = io.Copy(os.Stdout, resp.Body)
+		_, err = io.Copy(os.Stdout, resp.Body)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		fmt.Printf("Client %d: %s\n", cfg.id, time.Since(start))
 	}
+
+	go func() {
+		respHistoryQueue := make([]bool, 0, cfg.rate)
+		for {
+			select {
+			case isSuccess := <-successRespCh:
+				if len(respHistoryQueue) == cfg.rate {
+					lastResp := respHistoryQueue[0]
+					removeThroughputCounter(lastResp)
+					respHistoryQueue = respHistoryQueue[1:]
+				}
+				respHistoryQueue = append(respHistoryQueue, isSuccess)
+				addThroughputCounter(isSuccess)
+			}
+		}
+	}()
+
 	ticker := time.NewTicker(time.Second / time.Duration(cfg.rate))
 	defer ticker.Stop() // Not triggered since the program is killed with Ctrl-C
 	for {
