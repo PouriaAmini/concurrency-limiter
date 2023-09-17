@@ -131,10 +131,10 @@ function _M.start(self)
 
         -- Adjust limit based on AIMD
         local new_limit = 0
-        if windowed_latency >= self.algo_props.timeout then
-            new_limit = math.max(self.algo_props.min, math.ceil(limit * self.algo_props.backoff))
+        if windowed_latency >= self.aimd_props.timeout then
+            new_limit = math.max(self.aimd_props.min, math.ceil(limit * self.aimd_props.backoff))
         else
-            new_limit = math.min(self.algo_props.max, limit + 1 )
+            new_limit = math.min(self.aimd_props.max, limit + 1)
         end
 
         ngx.log(ngx.ERR, string.format("Adjustment:: limit:%d, num:%d, latency:%f new_limit: %d", limit, num_requests, windowed_latency, new_limit))

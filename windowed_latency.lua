@@ -12,9 +12,6 @@ local latency_sum_key = 'sum'
 local latencies_key = 'latencies'
 
 function WindowedLatency.new(dict, type, percentile_val, min_requests)
-
-    ngx.log(ngx.ERR, "HELLO")
-
     assert((type == 'average' or type == 'percentile') and percentile_val >= 0 and percentile_val < 100 and min_requests > 0)
 
     local self = setmetatable({}, WindowedLatency)
@@ -63,7 +60,7 @@ function WindowedLatency:get()
             return nil, string.format('No. of requests in window (%d) less than min required (%d)', len, self.min_requests)
         end
 
-        latencies = {}
+        local latencies = {}
         for i = 1, len do
             table.insert(latencies, i, self.dict:lpop(latencies_key))
         end
