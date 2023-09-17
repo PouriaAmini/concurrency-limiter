@@ -1,4 +1,35 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.1.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -18,14 +49,14 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
+  "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -122,7 +153,7 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 12,
         "x": 0,
         "y": 0
@@ -144,7 +175,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+            "uid": "${DS_PROMETHEUS}"
           },
           "disableTextWrap": false,
           "editorMode": "code",
@@ -160,7 +191,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+            "uid": "${DS_PROMETHEUS}"
           },
           "disableTextWrap": false,
           "editorMode": "code",
@@ -177,7 +208,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg_over_time(http_success_response_client0_throughput{instance=\"localhost:8081\"}[15s])",
@@ -194,7 +225,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -291,7 +322,7 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 12,
         "x": 12,
         "y": 0
@@ -313,7 +344,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+            "uid": "${DS_PROMETHEUS}"
           },
           "disableTextWrap": false,
           "editorMode": "code",
@@ -329,7 +360,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+            "uid": "${DS_PROMETHEUS}"
           },
           "disableTextWrap": false,
           "editorMode": "code",
@@ -346,7 +377,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg_over_time(http_success_response_client0_throughput{instance=\"localhost:8082\"}[15s])",
@@ -363,7 +394,122 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"nginx_inflight_requests\", instance=\"localhost:9145\", job=\"proxy\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 15
+              },
+              {
+                "id": "displayName",
+                "value": "Proxied Requests"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "nginx_inflight_requests",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Proxy",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -437,10 +583,10 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 12
       },
       "id": 4,
       "options": {
@@ -459,7 +605,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+            "uid": "${DS_PROMETHEUS}"
           },
           "disableTextWrap": false,
           "editorMode": "builder",
@@ -479,7 +625,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -554,10 +700,10 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 12
       },
       "id": 3,
       "options": {
@@ -576,7 +722,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "dca12544-c11b-4978-8f01-02f1b36586fb"
+            "uid": "${DS_PROMETHEUS}"
           },
           "disableTextWrap": false,
           "editorMode": "builder",
@@ -621,8 +767,8 @@
     ]
   },
   "timezone": "",
-  "title": "Demo",
-  "uid": "e393af99-c45d-4d49-907e-920ffd0899d1",
-  "version": 9,
+  "title": "Demo Copy",
+  "uid": "e6afcf11-bedc-4e65-9d35-07166d5da36e",
+  "version": 1,
   "weekStart": ""
 }
