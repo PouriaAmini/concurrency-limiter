@@ -98,7 +98,7 @@ func main() {
 		resp, err := client.Do(req)
 		if err != nil {
 			var errTimeout *url.Error
-			if errors.As(err, &errTimeout) && errTimeout.Timeout() {
+			if errors.As(err, &errTimeout) && errTimeout.Timeout() || errors.Is(err, io.EOF) {
 				successRespCh <- false
 			}
 			fmt.Println(err)
