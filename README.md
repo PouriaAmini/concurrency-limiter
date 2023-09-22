@@ -1,7 +1,7 @@
 # Concurrency Limiter
 Implementing ideas from ["Stop Rate Limiting! Capacity Management Done Right" by Jon Moore](https://www.youtube.com/watch?v=m64SWl9bfvk&ab_channel=StrangeLoopConference).
 
-<img width="1440" alt="Screenshot 2023-09-17 at 7 16 02 PM" src="https://github.com/PouriaAmini/concurrency-limiter/assets/64161548/e18f7fb8-81cf-4886-8111-5b38b0362404">
+<img width="1440" alt="Screenshot 2023-09-17 at 7 16 02 PM" src="https://github.com/PouriaAmini/concurrency-limiter/assets/64161548/a553a6c3-ba6c-4ffd-8c24-bbd160b4f457">
 
 # Introduction
 Concurrency Limiter is a proxy server that limits in-flight requests to 
@@ -35,7 +35,8 @@ drained from the queue. Now, if the client injects 5 requests per second into
 the system, the queue will grow indefinitely, and the response time will
 increase.
 
-<img width="666" alt="Screenshot 2023-09-22 at 6 08 18 PM" src="https://github.com/PouriaAmini/concurrency-limiter/assets/64161548/4f213b69-969d-4878-ba28-61c06af2189b">
+<img width="666" alt="Screenshot 2023-09-22 at 6 08 18 PM" src="https://github.com/PouriaAmini/concurrency-limiter/assets/64161548/f5a2fec1-25a6-4314-9d13-6f1d932e9c3e">
+
 
 The goal of this project is to limit the number of in-flight requests to the
 server to prevent the queue from growing indefinitely and to keep the response
@@ -60,7 +61,11 @@ time low.
   requests as possible:
 
 
-https://github.com/PouriaAmini/concurrency-limiter/assets/64161548/2827d88c-6521-4488-977b-fee4050c0ca1
+
+
+https://github.com/PouriaAmini/concurrency-limiter/assets/64161548/695a28e5-4548-4651-9582-64dfa97c953b
+
+
 
     
 - ### Client/Server
